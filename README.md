@@ -15,7 +15,7 @@ Microservice responsible for user authentication, profile management, alert subs
 - [Running the Service](#running-the-service)
 - [API Reference](#api-reference)
 - [Running Tests](#running-tests)
-- [Build & Docker](#build--docker)
+- [Build](#build)
 - [Architecture Notes](#architecture-notes)
 
 ---
@@ -355,24 +355,11 @@ JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./mvnw test
 
 ---
 
-## Build & Docker
+## Build
 
 ```bash
 # Build fat JAR
 JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./mvnw package -DskipTests
-
-# Build Docker image (requires Docker)
-docker build -t user-management:1.0.0 .
-
-# Run container
-docker run -p 8085:8085 \
-  -e DB_URL=jdbc:mysql://204.168.203.32:3306/landslide_monitoring \
-  -e DB_USERNAME=landslide \
-  -e DB_PASSWORD=Landslide123! \
-  -e JWT_SECRET=your-secret-here \
-  -e CONSUL_HOST=204.168.203.32 \
-  -e APP_HOST=<container-ip> \
-  user-management:1.0.0
 ```
 
 ---
