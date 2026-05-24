@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.landslide.usermanagement.mapper.DeviceMapper">
+
+    <resultMap id="DeviceMap" type="UserDevice">
+        <id     property="id"          column="id"/>
+        <result property="userId"      column="user_id"/>
+        <result property="deviceToken" column="device_token"/>
+        <result property="platform"    column="platform"/>
+        <result property="appVersion"  column="app_version"/>
+        <result property="lastSeenAt"  column="last_seen_at"/>
+        <result property="status"      column="status"/>
+        <result property="createdAt"   column="created_at"/>
+    </resultMap>
+
+    <select id="findByToken" resultMap="DeviceMap">
+        SELECT id, user_id, device_token, platform, app_version,
+               last_seen_at, status, created_at
+        FROM user_device
+        WHERE device_token = #{token}
+        LIMIT 1
+    </select>
+
+    <select id="findActiveByUserId" resultMap="DeviceMap">
+        SELECT id, user_id, device_token, platform, app_version,
+               last_seen_at, status, created_at
+        FROM user_device
+        WHERE user_id = #{userId}
+          AND status = 'active'
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_device
+            (user_id, device_token, platform, app_version, last_seen_at, status, created_at)
+        VALUES
+            (#{userId}, #{deviceToken}, #{platform}, #{appVersion}, NOW(), 'active', NOW())
+    </insert>
+
+    <update id="updateLastSeen">
+        UPDATE user_device
+        SET last_seen_at = NOW()
+        WHERE device_token = #{token}
+    </update>
+
+    <update id="revokeByToken">
+        UPDATE user_device
+        SET status = 'revoked'
+        WHERE device_token = #{token}
+    </update>
+
+    <!--
+        Transfers ownership of a device token to a new user.
+        Used when the same token was registered by a different user.
+        Avoids UNIQUE constraint violations on device_token.
+    -->
+    <update id="transferToUser">
+        UPDATE user_device
+        SET user_id      = #{userId},
+            platform     = #{platform},
+            app_version  = #{appVersion},
+            last_seen_at = NOW(),
+            status       = 'active'
+        WHERE device_token = #{token}
+    </update>
+
+</mapper>

@@ -1,0 +1,51 @@
+# ── Build output ──────────────────────────────────────────────────────────────
+target/
+*.jar
+*.war
+*.class
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Maven wrapper cache (downloaded by mvnw, not committed) ───────────────────
+.mvn/wrapper/maven-wrapper.jar
+
+# ── IDE — IntelliJ IDEA ───────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ── IDE — VS Code ─────────────────────────────────────────────────────────────
+.vscode/
+
+# ── IDE — Eclipse ─────────────────────────────────────────────────────────────
+.classpath
+.project
+.settings/
+bin/
+
+# ── IDE — NetBeans ────────────────────────────────────────────────────────────
+nbproject/
+nbbuild/
+nbdist/
+nb-configuration.xml
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Test / coverage reports ───────────────────────────────────────────────────
+/target/surefire-reports/
+/target/site/
+
+# ── Spring Boot Dev Tools restart trigger ─────────────────────────────────────
+.spring-boot-devtools.properties

@@ -1,0 +1,41 @@
+server:
+  port: ${SERVER_PORT:8085}
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://204.168.203.32:3306/landslide_monitoring}
+    username: ${DB_USERNAME:landslide}
+    password: ${DB_PASSWORD:Landslide123!}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      initialization-fail-timeout: 10000
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: NON_NULL
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.landslide.usermanagement.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+jwt:
+  secret: ${JWT_SECRET:landslide-jwt-secret-key-development-2026}
+  expiration-hours: 24
+
+consul:
+  host: ${CONSUL_HOST:204.168.203.32}
+  port: ${CONSUL_PORT:8500}
+  service-host: ${APP_HOST:localhost}
+
+app:
+  env: ${APP_ENV:development}
+
+logging:
+  level:
+    com.landslide: DEBUG
+    org.mybatis: DEBUG
