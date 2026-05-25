@@ -37,6 +37,9 @@ public class ConsulConfig {
     @Value("${app.env:development}")
     private String appEnv;
 
+    @Value("${consul.token:}")
+    private String consulToken;
+
     @EventListener(ApplicationReadyEvent.class)
     public void registerWithConsul() {
         String serviceHost = resolveServiceHost();
@@ -58,7 +61,15 @@ public class ConsulConfig {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            restTemplate.put(url, registration);
+            if (consulToken != null && !consulToken.isBlank()) {
+                org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                headers.set("X-Consul-Token", consulToken);
+                org.springframework.http.HttpEntity<Map<String, Object>> entity =
+                        new org.springframework.http.HttpEntity<>(registration, headers);
+                restTemplate.exchange(url, org.springframework.http.HttpMethod.PUT, entity, Void.class);
+            } else {
+                restTemplate.put(url, registration);
+            }
             log.info("Registered with Consul — health check at {}", healthCheckUrl);
         } catch (Exception e) {
             log.warn("Could not register with Consul at {}:{} — {}", consulHost, consulPort, e.getMessage());

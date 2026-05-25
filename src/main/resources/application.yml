@@ -12,6 +12,9 @@ spring:
       connection-timeout: 30000
       initialization-fail-timeout: 10000
 
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
   jackson:
     property-naming-strategy: SNAKE_CASE
     default-property-inclusion: NON_NULL
@@ -31,11 +34,22 @@ consul:
   host: ${CONSUL_HOST:204.168.203.32}
   port: ${CONSUL_PORT:8500}
   service-host: ${APP_HOST:localhost}
+  token: ${CONSUL_TOKEN:}
 
 app:
   env: ${APP_ENV:development}
 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+
 logging:
   level:
-    com.landslide: DEBUG
-    org.mybatis: DEBUG
+    root: WARN
+    com.landslide: INFO
+    org.springframework.web: INFO
