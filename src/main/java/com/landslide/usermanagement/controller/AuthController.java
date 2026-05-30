@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Tag(name = "Authentication", description = "Register and login — no JWT required")
+@Tag(name = "Authentication", description = "Register, login, and logout")
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -85,6 +85,19 @@ public class AuthController {
         } catch (UnauthorizedException e) {
             return ResponseEntity.status(401).body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @Operation(
+            summary = "Logout",
+            description = "Revokes all active device tokens for the authenticated user. The JWT itself remains valid until expiry — discard it client-side.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Logged out")
+            }
+    )
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserPrincipal caller) {
+        authService.logout(caller.getUserId());
+        return ResponseEntity.noContent().build();
     }
 
     private UserPrincipal getCallerOrNull() {

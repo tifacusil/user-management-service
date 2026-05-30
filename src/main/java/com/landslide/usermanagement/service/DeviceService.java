@@ -26,19 +26,22 @@ public class DeviceService {
 
         if (existing != null) {
             if (existing.getUserId().equals(userId)) {
-                // Same user — just refresh last_seen_at
+                // Same user re-registering the same token — just refresh last_seen_at
                 deviceMapper.updateLastSeen(req.getDeviceToken());
                 return Map.of("device_id", existing.getId(), "_status", 200);
             } else {
-                // Different user — transfer token ownership.
-                // We update-in-place to respect any UNIQUE constraint on device_token.
-                // The previous owner effectively loses the token (semantically "revoked").
+                // Token belongs to another user — revoke caller's stale tokens, then
+                // transfer this token in-place to respect the UNIQUE constraint.
+                deviceMapper.revokeByUserIdAndPlatform(userId, req.getPlatform());
                 deviceMapper.transferToUser(
                         req.getDeviceToken(), userId,
                         req.getPlatform(), req.getAppVersion());
                 return Map.of("device_id", existing.getId(), "_status", 201);
             }
         }
+
+        // New token — drop any stale tokens the user already has before inserting
+        deviceMapper.revokeByUserIdAndPlatform(userId, req.getPlatform());
 
         UserDevice device = new UserDevice();
         device.setUserId(userId);

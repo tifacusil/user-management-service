@@ -50,6 +50,21 @@
         WHERE device_token = #{token}
     </update>
 
+    <update id="revokeAllByUserId">
+        UPDATE user_device
+        SET status = 'revoked'
+        WHERE user_id = #{userId}
+          AND status = 'active'
+    </update>
+
+    <update id="revokeByUserIdAndPlatform">
+        UPDATE user_device
+        SET status = 'revoked'
+        WHERE user_id  = #{userId}
+          AND platform = #{platform}
+          AND status   = 'active'
+    </update>
+
     <!--
         Transfers ownership of a device token to a new user.
         Used when the same token was registered by a different user.

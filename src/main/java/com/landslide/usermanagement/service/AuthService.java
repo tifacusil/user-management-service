@@ -7,6 +7,7 @@ import com.landslide.usermanagement.dto.RegisterResponse;
 import com.landslide.usermanagement.exception.DuplicateUserException;
 import com.landslide.usermanagement.exception.ForbiddenException;
 import com.landslide.usermanagement.exception.UnauthorizedException;
+import com.landslide.usermanagement.mapper.DeviceMapper;
 import com.landslide.usermanagement.mapper.UserMapper;
 import com.landslide.usermanagement.model.User;
 import com.landslide.usermanagement.security.JwtUtil;
@@ -23,13 +24,16 @@ public class AuthService {
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final DeviceMapper deviceMapper;
 
     public AuthService(UserMapper userMapper,
                        BCryptPasswordEncoder passwordEncoder,
-                       JwtUtil jwtUtil) {
+                       JwtUtil jwtUtil,
+                       DeviceMapper deviceMapper) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.deviceMapper = deviceMapper;
     }
 
     public RegisterResponse register(RegisterRequest req, UserPrincipal caller) {
@@ -80,5 +84,9 @@ public class AuthService {
         String expiresAt = DateTimeFormatter.ISO_INSTANT.format(expiry);
 
         return new LoginResponse(token, user.getId(), user.getUsername(), user.getRole(), expiresAt);
+    }
+
+    public void logout(Long userId) {
+        deviceMapper.revokeAllByUserId(userId);
     }
 }

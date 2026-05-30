@@ -30,4 +30,8 @@ public interface DeviceMapper {
             @Param("platform") String platform,
             @Param("appVersion") String appVersion
     );
+
+    void revokeAllByUserId(@Param("userId") Long userId);
+
+    void revokeByUserIdAndPlatform(@Param("userId") Long userId, @Param("platform") String platform);
 }
