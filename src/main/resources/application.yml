@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:mysql://204.168.203.32:3306/landslide_monitoring}
+    url: ${DB_URL:jdbc:mysql://204.168.203.32:3306/user_management}
     username: ${DB_USERNAME:landslide}
     password: ${DB_PASSWORD:Landslide123!}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -38,6 +38,10 @@ consul:
 
 app:
   env: ${APP_ENV:development}
+
+services:
+  project-management:
+    base-url: ${PROJECT_MANAGEMENT_URL:http://204.168.203.32:8084}
 
 springdoc:
   api-docs:

@@ -18,6 +18,4 @@ public interface SubscriptionMapper {
 
     void insert(UserProjectAlertSubscription subscription);
 
-    /** Returns true (1) if the project_id exists in the projects table */
-    int projectExists(@Param("projectId") String projectId);
 }

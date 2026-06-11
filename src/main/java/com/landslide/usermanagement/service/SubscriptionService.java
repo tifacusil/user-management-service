@@ -1,5 +1,6 @@
 package com.landslide.usermanagement.service;
 
+import com.landslide.usermanagement.client.ProjectManagementClient;
 import com.landslide.usermanagement.dto.SubscriptionRequest;
 import com.landslide.usermanagement.dto.SubscriptionResponse;
 import com.landslide.usermanagement.exception.DuplicateSubscriptionException;
@@ -19,10 +20,13 @@ public class SubscriptionService {
 
     private final SubscriptionMapper subscriptionMapper;
     private final UserMapper userMapper;
+    private final ProjectManagementClient projectClient;
 
-    public SubscriptionService(SubscriptionMapper subscriptionMapper, UserMapper userMapper) {
+    public SubscriptionService(SubscriptionMapper subscriptionMapper, UserMapper userMapper,
+                               ProjectManagementClient projectClient) {
         this.subscriptionMapper = subscriptionMapper;
         this.userMapper = userMapper;
+        this.projectClient = projectClient;
     }
 
     public SubscriptionResponse createSubscription(Long userId, SubscriptionRequest req) {
@@ -30,8 +34,8 @@ public class SubscriptionService {
         User user = userMapper.findById(userId);
         if (user == null) throw new UserNotFoundException("User not found: " + userId);
 
-        // Validate project exists
-        if (subscriptionMapper.projectExists(req.getProjectId()) == 0) {
+        // Validate project exists via Project Management service
+        if (!projectClient.projectExists(req.getProjectId())) {
             throw new ProjectNotFoundException("Project not found: " + req.getProjectId());
         }
 

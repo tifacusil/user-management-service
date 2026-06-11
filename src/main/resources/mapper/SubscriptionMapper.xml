@@ -46,10 +46,4 @@
              #{quietHoursStart}, #{quietHoursEnd}, NOW())
     </insert>
 
-    <select id="projectExists" resultType="int">
-        SELECT COUNT(1)
-        FROM projects
-        WHERE project_id = #{projectId}
-    </select>
-
 </mapper>
