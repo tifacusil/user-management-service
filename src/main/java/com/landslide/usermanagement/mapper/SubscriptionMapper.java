@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 public interface SubscriptionMapper {
 
+    List<UserProjectAlertSubscription> findAll();
+
     List<UserProjectAlertSubscription> findByUserId(@Param("userId") Long userId);
 
     UserProjectAlertSubscription findByUserIdAndProjectId(

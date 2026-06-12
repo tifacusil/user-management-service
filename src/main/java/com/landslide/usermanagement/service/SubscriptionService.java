@@ -61,6 +61,12 @@ public class SubscriptionService {
         return SubscriptionResponse.from(sub);
     }
 
+    public List<SubscriptionResponse> getAllSubscriptions() {
+        return subscriptionMapper.findAll().stream()
+                .map(SubscriptionResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public List<SubscriptionResponse> getSubscriptions(Long userId) {
         User user = userMapper.findById(userId);
         if (user == null) throw new UserNotFoundException("User not found: " + userId);

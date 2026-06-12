@@ -31,6 +31,26 @@ public class SubscriptionController {
     }
 
     @Operation(
+            summary = "List all subscriptions",
+            description = "**Admin only.** Returns every row in the subscriptions table.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Full subscription list returned"),
+                    @ApiResponse(responseCode = "403", description = "Caller is not an admin",
+                            content = @Content(examples = @ExampleObject(value = """
+                                    {"error": "Only admins can view all subscriptions"}""")))
+            }
+    )
+    @GetMapping("/subscriptions")
+    public ResponseEntity<List<SubscriptionResponse>> getAllSubscriptions(
+            @AuthenticationPrincipal UserPrincipal caller) {
+
+        if (!caller.isAdmin()) {
+            throw new ForbiddenException("Only admins can view all subscriptions");
+        }
+        return ResponseEntity.ok(subscriptionService.getAllSubscriptions());
+    }
+
+    @Operation(
             summary = "Subscribe a user to project alerts",
             description = """
                     **Admin only.** Subscribes the user to receive alerts from a project at or above

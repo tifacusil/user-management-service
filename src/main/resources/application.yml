@@ -11,6 +11,9 @@ spring:
       maximum-pool-size: 10
       connection-timeout: 30000
       initialization-fail-timeout: 10000
+      keepalive-time: 300000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration

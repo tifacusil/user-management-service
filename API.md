@@ -19,6 +19,7 @@ Base URL: `http://YOUR_SERVER_IP:8085`
   - [Get user](#get-apiv1usersuserid)
   - [Update user](#put-apiv1usersuserid)
 - [Subscriptions](#subscriptions)
+  - [List all subscriptions](#get-apiv1userssubscriptions)
   - [Create subscription](#post-apiv1usersuseridsubscriptions)
   - [List subscriptions](#get-apiv1usersuseridsubscriptions)
 - [Devices](#devices)
@@ -165,6 +166,38 @@ Updates `email` and/or `phone_e164`. Username, role, and status cannot be change
 ---
 
 ## Subscriptions
+
+### `GET /api/v1/users/subscriptions`
+
+Returns every row in the subscriptions table. **Admin only.**
+
+**Response `200`**
+```json
+[
+  {
+    "id": 1,
+    "user_id": 3,
+    "project_id": "shangtan",
+    "min_alert_level": "blue",
+    "sms_enabled": true,
+    "push_enabled": true,
+    "email_enabled": false,
+    "quiet_hours_start": "22:00",
+    "quiet_hours_end": "06:00",
+    "created_at": "2026-06-01T10:00:00Z"
+  }
+]
+```
+
+Results are ordered by `created_at` descending. Returns `[]` if no subscriptions exist.
+
+**Errors**
+
+| Code | Reason |
+|---|---|
+| `403` | Caller is not an admin |
+
+---
 
 ### `POST /api/v1/users/{user_id}/subscriptions`
 
