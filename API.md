@@ -3,10 +3,11 @@
 Base URL: `http://YOUR_SERVER_IP:8085`
 
 > **All fields use `snake_case`** (Jackson serializes that way).  
-> All endpoints except `/health` and `/api/v1/auth/**` require a JWT in the header:
+> All endpoints except `/health`, `/api/v1/auth/**`, and `/api/v1/users/subscriptions` require a JWT in the header:
 > ```
 > Authorization: Bearer <token>
 > ```
+> `/api/v1/users/subscriptions` uses a static API key instead — see [List all subscriptions](#get-apiv1userssubscriptions).
 
 ---
 
@@ -169,7 +170,12 @@ Updates `email` and/or `phone_e164`. Username, role, and status cannot be change
 
 ### `GET /api/v1/users/subscriptions`
 
-Returns every row in the subscriptions table. **Admin only.**
+Returns every row in the subscriptions table. **No JWT required.** Authentication is done via a static API key passed in the `X-Api-Key` header.
+
+**Request header**
+```
+X-Api-Key: <key from server .env>
+```
 
 **Response `200`**
 ```json
@@ -195,7 +201,7 @@ Results are ordered by `created_at` descending. Returns `[]` if no subscriptions
 
 | Code | Reason |
 |---|---|
-| `403` | Caller is not an admin |
+| `403` | Missing or invalid `X-Api-Key` |
 
 ---
 

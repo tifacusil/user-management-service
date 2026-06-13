@@ -41,6 +41,7 @@ consul:
 
 app:
   env: ${APP_ENV:development}
+  subscriptions-api-key: ${SUBSCRIPTIONS_API_KEY:}
 
 services:
   project-management:

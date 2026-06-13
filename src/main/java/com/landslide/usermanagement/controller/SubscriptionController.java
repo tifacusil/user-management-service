@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,27 +26,31 @@ import java.util.List;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final String subscriptionsApiKey;
 
-    public SubscriptionController(SubscriptionService subscriptionService) {
+    public SubscriptionController(SubscriptionService subscriptionService,
+                                  @Value("${app.subscriptions-api-key}") String subscriptionsApiKey) {
         this.subscriptionService = subscriptionService;
+        this.subscriptionsApiKey = subscriptionsApiKey;
     }
 
     @Operation(
             summary = "List all subscriptions",
-            description = "**Admin only.** Returns every row in the subscriptions table.",
+            description = "Returns every row in the subscriptions table. Requires `X-Api-Key` header — no JWT needed.",
+            parameters = @Parameter(name = "X-Api-Key", description = "Static API key from server .env", required = true),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Full subscription list returned"),
-                    @ApiResponse(responseCode = "403", description = "Caller is not an admin",
+                    @ApiResponse(responseCode = "403", description = "Missing or invalid API key",
                             content = @Content(examples = @ExampleObject(value = """
-                                    {"error": "Only admins can view all subscriptions"}""")))
+                                    {"error": "Invalid API key"}""")))
             }
     )
     @GetMapping("/subscriptions")
     public ResponseEntity<List<SubscriptionResponse>> getAllSubscriptions(
-            @AuthenticationPrincipal UserPrincipal caller) {
+            @RequestHeader(value = "X-Api-Key", required = false) String apiKey) {
 
-        if (!caller.isAdmin()) {
-            throw new ForbiddenException("Only admins can view all subscriptions");
+        if (apiKey == null || !apiKey.equals(subscriptionsApiKey)) {
+            throw new ForbiddenException("Invalid API key");
         }
         return ResponseEntity.ok(subscriptionService.getAllSubscriptions());
     }
