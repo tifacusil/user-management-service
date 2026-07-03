@@ -23,6 +23,13 @@
         LIMIT 1
     </select>
 
+    <select id="findAllActive" resultMap="DeviceMap">
+        SELECT id, user_id, device_token, platform, app_version,
+               last_seen_at, status, created_at
+        FROM user_device
+        WHERE status = 'active'
+    </select>
+
     <select id="findActiveByUserId" resultMap="DeviceMap">
         SELECT id, user_id, device_token, platform, app_version,
                last_seen_at, status, created_at

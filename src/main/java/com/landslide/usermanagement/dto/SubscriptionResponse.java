@@ -2,8 +2,11 @@ package com.landslide.usermanagement.dto;
 
 import com.landslide.usermanagement.model.UserProjectAlertSubscription;
 
+import java.util.List;
+
 public class SubscriptionResponse {
     private Long id;
+    private Long userId;
     private String projectId;
     private String minAlertLevel;
     private boolean smsEnabled;
@@ -11,10 +14,12 @@ public class SubscriptionResponse {
     private boolean emailEnabled;
     private String quietHoursStart;
     private String quietHoursEnd;
+    private List<String> fcmTokens;
 
     public static SubscriptionResponse from(UserProjectAlertSubscription s) {
         SubscriptionResponse r = new SubscriptionResponse();
         r.id = s.getId();
+        r.userId = s.getUserId();
         r.projectId = s.getProjectId();
         r.minAlertLevel = s.getMinAlertLevel();
         r.smsEnabled = s.isSmsEnabled();
@@ -32,6 +37,7 @@ public class SubscriptionResponse {
     }
 
     public Long getId() { return id; }
+    public Long getUserId() { return userId; }
     public String getProjectId() { return projectId; }
     public String getMinAlertLevel() { return minAlertLevel; }
     public boolean isSmsEnabled() { return smsEnabled; }
@@ -39,4 +45,6 @@ public class SubscriptionResponse {
     public boolean isEmailEnabled() { return emailEnabled; }
     public String getQuietHoursStart() { return quietHoursStart; }
     public String getQuietHoursEnd() { return quietHoursEnd; }
+    public List<String> getFcmTokens() { return fcmTokens; }
+    public void setFcmTokens(List<String> fcmTokens) { this.fcmTokens = fcmTokens; }
 }

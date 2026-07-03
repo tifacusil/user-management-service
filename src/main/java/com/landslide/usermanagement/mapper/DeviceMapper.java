@@ -11,6 +11,8 @@ public interface DeviceMapper {
 
     UserDevice findByToken(@Param("token") String token);
 
+    List<UserDevice> findAllActive();
+
     List<UserDevice> findActiveByUserId(@Param("userId") Long userId);
 
     void insert(UserDevice device);

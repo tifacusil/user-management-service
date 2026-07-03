@@ -190,12 +190,14 @@ X-Api-Key: <key from server .env>
     "email_enabled": false,
     "quiet_hours_start": "22:00",
     "quiet_hours_end": "06:00",
-    "created_at": "2026-06-01T10:00:00Z"
+    "fcm_tokens": ["fcm_token_abc", "fcm_token_xyz"]
   }
 ]
 ```
 
-Results are ordered by `created_at` descending. Returns `[]` if no subscriptions exist.
+- Results are ordered by `created_at` descending.
+- `fcm_tokens` contains all **active** device tokens for the subscribed user. Empty array `[]` if the user has no active devices.
+- Returns `[]` if no subscriptions exist.
 
 **Errors**
 

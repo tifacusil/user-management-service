@@ -6,13 +6,16 @@ import com.landslide.usermanagement.dto.SubscriptionResponse;
 import com.landslide.usermanagement.exception.DuplicateSubscriptionException;
 import com.landslide.usermanagement.exception.ProjectNotFoundException;
 import com.landslide.usermanagement.exception.UserNotFoundException;
+import com.landslide.usermanagement.mapper.DeviceMapper;
 import com.landslide.usermanagement.mapper.SubscriptionMapper;
 import com.landslide.usermanagement.mapper.UserMapper;
 import com.landslide.usermanagement.model.User;
+import com.landslide.usermanagement.model.UserDevice;
 import com.landslide.usermanagement.model.UserProjectAlertSubscription;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,12 +23,14 @@ public class SubscriptionService {
 
     private final SubscriptionMapper subscriptionMapper;
     private final UserMapper userMapper;
+    private final DeviceMapper deviceMapper;
     private final ProjectManagementClient projectClient;
 
     public SubscriptionService(SubscriptionMapper subscriptionMapper, UserMapper userMapper,
-                               ProjectManagementClient projectClient) {
+                               DeviceMapper deviceMapper, ProjectManagementClient projectClient) {
         this.subscriptionMapper = subscriptionMapper;
         this.userMapper = userMapper;
+        this.deviceMapper = deviceMapper;
         this.projectClient = projectClient;
     }
 
@@ -62,8 +67,18 @@ public class SubscriptionService {
     }
 
     public List<SubscriptionResponse> getAllSubscriptions() {
+        Map<Long, List<String>> tokensByUser = deviceMapper.findAllActive().stream()
+                .collect(Collectors.groupingBy(
+                        UserDevice::getUserId,
+                        Collectors.mapping(UserDevice::getDeviceToken, Collectors.toList())
+                ));
+
         return subscriptionMapper.findAll().stream()
-                .map(SubscriptionResponse::from)
+                .map(s -> {
+                    SubscriptionResponse r = SubscriptionResponse.from(s);
+                    r.setFcmTokens(tokensByUser.getOrDefault(s.getUserId(), List.of()));
+                    return r;
+                })
                 .collect(Collectors.toList());
     }
 
