@@ -58,6 +58,17 @@ management:
   metrics:
     tags:
       application: user-management
+    distribution:
+      # Sin percentiles-histogram, Micrometer publica http.server.requests como
+      # summary (solo _count/_sum, sin _bucket) y el servicio queda fuera del
+      # histogram_quantile del dashboard.
+      percentiles-histogram:
+        http.server.requests: true
+      # Mismos cortes que el histograma HTTP de los 4 servicios Go (Sistema B)
+      # y del resto de servicios Spring/Flask de Sistema A, para que
+      # histogram_quantile sea comparable entre sistemas.
+      slo:
+        http.server.requests: 5ms,10ms,25ms,50ms,100ms,250ms,500ms,1s,2500ms,5000ms
 
 springdoc:
   api-docs:
