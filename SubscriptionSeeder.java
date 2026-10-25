@@ -82,7 +82,7 @@ public class SubscriptionSeeder {
 
         // Step 1 — Login as admin to get JWT
         System.out.println("[1/2] Logging in as admin...");
-        String[] adminLogin = login("admin", "password123");
+        String[] adminLogin = login("admin", ADMIN_PASSWORD);
         if (adminLogin == null) {
             System.out.println("💥 Admin login failed. Aborting.");
             System.exit(1);

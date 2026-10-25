@@ -45,7 +45,7 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 cd user-management-service
 
 # Copy the environment file and edit as needed
-cp .env .env.local   # or just edit .env directly
+cp .env.example .env   # then fill in the secrets
 
 # Compile
 JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./mvnw compile
@@ -62,8 +62,8 @@ All configuration is driven by environment variables. The service reads a `.env`
 | `SERVER_PORT` | `8085` | HTTP port |
 | `DB_URL` | `jdbc:mysql://204.168.203.32:3306/landslide_monitoring` | MySQL JDBC URL |
 | `DB_USERNAME` | `landslide` | MySQL user |
-| `DB_PASSWORD` | `Landslide123!` | MySQL password |
-| `JWT_SECRET` | `landslide-jwt-secret-key-development-2026` | HS256 signing key (≥ 32 chars) |
+| `DB_PASSWORD` | — (required) | MySQL password |
+| `JWT_SECRET` | — (required) | HS256 signing key (≥ 32 chars) |
 | `CONSUL_HOST` | `204.168.203.32` | Consul agent host |
 | `CONSUL_PORT` | `8500` | Consul agent port |
 | `APP_HOST` | `localhost` | IP Consul uses to reach this service's `/health` endpoint |
@@ -129,7 +129,7 @@ Authenticate and obtain a JWT (valid 24 h).
 
 **Request**
 ```json
-{ "username": "admin", "password": "password123" }
+{ "username": "admin", "password": "<password>" }
 ```
 
 **Response `200`**

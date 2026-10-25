@@ -2,10 +2,14 @@ server:
   port: ${SERVER_PORT:8085}
 
 spring:
+  # Lets tests (which skip main()) read .env too; real env vars still win.
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     url: ${DB_URL:jdbc:mysql://204.168.203.32:3306/user_management}
     username: ${DB_USERNAME:landslide}
-    password: ${DB_PASSWORD:Landslide123!}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
@@ -30,7 +34,7 @@ mybatis:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 jwt:
-  secret: ${JWT_SECRET:landslide-jwt-secret-key-development-2026}
+  secret: ${JWT_SECRET}
   expiration-hours: 24
 
 consul:

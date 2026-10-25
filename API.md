@@ -90,7 +90,7 @@ Returns a JWT valid for **24 hours**.
 ```json
 {
   "username": "admin",
-  "password": "password123"
+  "password": "<password>"
 }
 ```
 
